@@ -27,9 +27,10 @@ wss.on('connection', (ws) => {
 });
 
 // Broadcast to all connected WS clients
-function broadcastData(data) {
+function broadcastData(data, source) {
   const processedData = {
     ...data,
+    source,
     ...analyzeMachineHealth(data)
   };
   
@@ -53,11 +54,15 @@ app.post('/api/data', (req, res) => {
   try {
     const data = req.body;
     // Basic validation
-    if (!data.machineId || data.temperature === undefined) {
+    const requiredFields = [
+      'temperature', 'humidity', 'vibrationX', 'vibrationY', 'vibrationZ', 'current'
+    ];
+    if (!data.machineId || requiredFields.some((field) => !Number.isFinite(data[field]))) {
       return res.status(400).json({ error: 'Invalid data format' });
     }
-    
-    const processed = broadcastData(data);
+
+    console.log('Sensor data received:', data);
+    const processed = broadcastData(data, 'SENSOR');
     res.status(200).json({ success: true, healthScore: processed.healthScore });
   } catch (error) {
     console.error('Error processing sensor data:', error);
@@ -76,7 +81,7 @@ app.post('/api/simulation/start', (req, res) => {
   
   simulationInterval = setInterval(() => {
     const simData = generateSimulatedData();
-    broadcastData(simData);
+    broadcastData(simData, 'SIMULATION');
   }, 2000); // Send data every 2 seconds
   
   res.json({ status: 'started' });

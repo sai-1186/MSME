@@ -164,6 +164,13 @@ function App() {
             <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Machine ID</span>
             <span className="font-mono font-medium text-slate-200">{latestData?.machineId || "WAITING..."}</span>
           </div>
+
+          <div className="flex flex-col">
+            <span className="text-xs text-slate-500 uppercase font-bold tracking-wider">Data source</span>
+            <span className={`font-mono text-xs font-bold ${latestData?.source === 'SENSOR' ? 'text-accent-green' : 'text-amber-400'}`}>
+              {latestData?.source || 'WAITING'}
+            </span>
+          </div>
           
           <div className="flex items-center gap-2 bg-slate-900 py-1.5 px-3 rounded-full border border-slate-700">
             <div className={`h-2.5 w-2.5 rounded-full ${isConnected ? 'bg-accent-green shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-slate-500'}`}></div>

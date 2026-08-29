@@ -6,7 +6,11 @@ function analyzeMachineHealth(data) {
   
   const { temperature, current, vibrationX, vibrationY, vibrationZ, humidity } = data;
   
-  const maxVibration = Math.max(vibrationX, vibrationY, vibrationZ);
+  const maxVibration = Math.max(
+    Math.abs(vibrationX),
+    Math.abs(vibrationY),
+    Math.abs(vibrationZ)
+  );
   
   if (temperature >= thresholds.temperature.critical) {
     riskScore += 40;
